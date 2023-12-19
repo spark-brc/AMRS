@@ -1,0 +1,24 @@
+      SUBROUTINE APAGE(IP)
+!     APEX1501
+!     THIS SUBPROGRAM CHANGES PAGES, WRITES VERSION, DATE, & TITLE
+      USE PARM
+      IF(KFL(1)>0)THEN
+          WRITE(KW(1),1)IYER,IMON,IDAY,IT1,IT2,IT3
+          WRITE(KW(1),5)IRUN
+          WRITE(KW(1),2)TITLE
+          IF(IP==0)RETURN
+          WRITE(KW(1),4)SITEFILE
+          WRITE(KW(1),4)SAFILE
+          IF(NGN>0)WRITE(KW(1),4)FWTH(IRF(ISA))
+          WRITE(KW(1),4)TITSO(ISA)
+          WRITE(KW(1),4)TITOP(ISA)
+	      IF(IPTS(ISA)>0)WRITE(KW(1),4)FPSO(IPTS(ISA))
+          WRITE(KW(1),3)ISA,NBSA(ISA)
+      END IF    
+      RETURN
+    1 FORMAT('1'/T5,'APEX1501 v20181201',2X,3I4,2X,2(I2,':'),I2)    ! Added date to the version - Luca Doro
+    2 FORMAT(10X,20A4)
+    3 FORMAT(10X,'SA#= ',I8,1X,'ID= ',I8)
+    4 FORMAT(10X,A80)
+    5 FORMAT(10X,'RUN # ',I4)
+      END
