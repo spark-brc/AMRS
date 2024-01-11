@@ -41,12 +41,12 @@
       ! Version description
       ! STR='APEX1501-MODFLOW for the White River Watershed. rev.05112020 '
       WRITE(*,*) ''
-      STR='  APEX-MODFLOW-RT3D-Salt (AMRS) rev.230127  '
+      STR='  APEX-MODFLOW-RT3D-Salt (AMRS) rev.240111  '
       WRITE(*,*) STR
       WRITE(*,*) ''
      
       CALL AHEAD
-	   ADUM='APEXRUN.DAT'
+      ADUM='APEXRUN.DAT'
       CALL OPENV(KR(11),ADUM,0)
       ADUM='APEXFILE.DAT'
       CALL OPENV(KR(12),ADUM,0)

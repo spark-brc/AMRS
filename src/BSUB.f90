@@ -737,26 +737,48 @@
       QRFN(IDO)=0.
       SMQN(IDO)=0.
       
-      !rtb salt
-      if(ISALT>0) then
-        do m=1,mion
-          SMQS(IDO,m) = 0.
-        enddo
-      endif
+      !rtb salt original
+      !if(ISALT>0) then
+      !  do m=1,mion
+      !    SMQS(IDO,m) = 0.
+      !  enddo
+      !endif
+      !
+      !IF(LUN(ISA)==35)THEN
+      !    QN(IDO)=RFQN(ISA)
+      !ELSE
+      !    if(isa.eq.87) then
+      !      write(8643,*) iyr,ida,soil_csalt(LID(1,isa),isa,1)
+      !    endif
+      !    if(isa.eq.87 .and. ida.eq.119) then
+      !      dum = 10
+      !    endif
+      !    
+      !    if(ISALT>0) call salt_chem_soil !rtb salt --> salt ion equilibrium chemistry for soil layers
+      !    CALL NPCY
+      !END IF
+      ! 
       
-      IF(LUN(ISA)==35)THEN
-          QN(IDO)=RFQN(ISA)
-      ELSE
-          if(isa.eq.87) then
-            write(8643,*) iyr,ida,soil_csalt(LID(1,isa),isa,1)
-          endif
-          if(isa.eq.87 .and. ida.eq.119) then
-            dum = 10
-          endif
-          
-          if(ISALT>0) call salt_chem_soil !rtb salt --> salt ion equilibrium chemistry for soil layers
-          CALL NPCY
-      END IF    
+      ! put LUN if statement into ISALT if statement !spark 01/11/2024
+      if(isalt>0) then
+        do m=1,mion
+          smqs(ido,m) = 0.
+        enddo
+          IF(LUN(ISA)==35)THEN
+              QN(IDO)=RFQN(ISA)
+          ELSE
+              if(isa.eq.87) then
+                write(8643,*) iyr,ida,soil_csalt(LID(1,isa),isa,1)
+              endif
+              if(isa.eq.87 .and. ida.eq.119) then
+                dum = 10
+              endif
+              if(ISALT>0) call salt_chem_soil !rtb salt --> salt ion equilibrium chemistry for soil layers
+              CALL NPCY
+          END IF        
+      endif
+      ! spark
+ 
       IF(LUN(ISA)/=35)CALL TMIX(XXXX,ZMIX,1,1)
       IF(PADDY_HWEIR(ISA)>0.)PADDY_STO(1,ISA)=PADDY_STO(1,ISA)+BVIR(ISA) 
       IF(IRR(ISA)==1)RFV(IRF(ISA))=RFV(IRF(ISA))+BVIR(ISA)
