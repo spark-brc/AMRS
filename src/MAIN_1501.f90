@@ -41,7 +41,7 @@
       ! Version description
       ! STR='APEX1501-MODFLOW for the White River Watershed. rev.05112020 '
       WRITE(*,*) ''
-      STR='  APEX-MODFLOW-RT3D-Salt (AMRS) rev.240111  '
+      STR='  APEX-MODFLOW-RT3D-Salt (AMRS) rev.24-002  '
       WRITE(*,*) STR
       WRITE(*,*) ''
      
