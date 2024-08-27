@@ -77,7 +77,7 @@
           END IF
           RF1=RF1*WSAX1
           SRD(MO,ISA)=SRD(MO,ISA)+1.
-          SMM(4,MO,ISA)=SMM(4,MO,ISA)+RF1
+          SMM(4,MO,ISA)=SMM(4,MO,ISA)+RF1 !m3
       END IF
       IF(PADDY_HWEIR(ISA)>0)THEN 
           PADDY_STO(1,ISA)=PADDY_STO(1,ISA)+RFV(IRF(ISA)) !mm

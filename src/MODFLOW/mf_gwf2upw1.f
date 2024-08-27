@@ -2196,7 +2196,7 @@ C-------STRAIGHT LINE WITH PARABOLIC SMOOTHING
         DEALLOCATE(Gwfupwdat(IGRID)%Sn)
         DEALLOCATE(Gwfupwdat(IGRID)%So)
         DEALLOCATE(Gwfupwdat(IGRID)%IUPWCB)
-        DEALLOCATE(Gwfupwdat(IGRID)%IWDFLG)
+        !DEALLOCATE(Gwfupwdat(IGRID)%IWDFLG)
         DEALLOCATE(Gwfupwdat(IGRID)%IWETIT)
         DEALLOCATE(Gwfupwdat(IGRID)%IHDWET)
         DEALLOCATE(Gwfupwdat(IGRID)%IPHDRY)

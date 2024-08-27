@@ -14,7 +14,7 @@
 	  DIMENSION HD28(15,10)                                    
       DIMENSION KTP(7),MNST(7)                                                       
       DIMENSION ZTX(37),TDFP(MPS),TDRP(MPS),TDSP(MPS),&
-      TLHP(MPS),TRFP(MPS),TSSP(MPS),XTX(14),YTP(13),ZTZ(6)
+      TLHP(MPS),TRFP(MPS),TSSP(MPS),XTX(14),YTP(13),ZTZ(6),ZZZ(MNC)
       DIMENSION XTMP(MPS,MHY)                   
       DATA MNST/1,2,3,4,5,6,7/,IIP/1/
       DATA YTP/13*0./
@@ -905,8 +905,8 @@
                       TSR(MO1,ISA)=TSR(MO1,ISA)+SMM(3,MO1,ISA)                                       
                       IF(KFL(40)>0)THEN
                           DO J=1,NCP(IRO(ISA),ISA)
-                              ZTX(J)=1000.*YLD2(LY(IRO(ISA),J,ISA),ISA)
-                              YLX(J)=MAX(0.,ZTX(J)-YLX(J))                                                        
+                              ZZZ(J)=1000.*YLD2(LY(IRO(ISA),J,ISA),ISA)   !ZTX(J)=1000.*YLD2(LY(IRO(ISA),J,ISA),ISA) modified for testing - Luca Doro 2023-11-23
+                              YLX(J)=MAX(0.,ZZZ(J)-YLX(J))    !YLX(J)=MAX(0.,ZTX(J)-YLX(J)) modified for testing - Luca Doro 2023-11-23
                           END DO
                           WRITE(KW(40),155)NBSA(ISA),IYR,MO1,SMMUA(4,MO1,ISA),SMMUA(13,MO1,ISA),&
                           SMMUA(117,MO1,ISA),SMMUA(16,MO1,ISA),RST0(ISA),(CPNM(LY(IRO(ISA),J,ISA)),&
@@ -918,7 +918,7 @@
                           SMMC(15,LY(IRO(ISA),J,ISA),MO1,ISA),CNLV(LY(IRO(ISA),J,ISA)),&
                           BN(3,LY(IRO(ISA),J,ISA)),YLX(J),SMMUA(141,MO1,ISA),J=1,NCP(IRO(ISA),ISA))
                           DO J=1,NCP(IRO(ISA),ISA)
-                              YLX(J)=ZTX(J)
+                              YLX(J)=ZZZ(J)    !YLX(J)=ZTX(J) modified for testing - Luca Doro 2023-11-23
                           END DO                    
                       END IF                                                                                    
                       IF(NDP>0)THEN                                                                  
@@ -1182,7 +1182,7 @@
                               I=1,12),HEDS(K)                                                                      
                           END DO
                       END IF          
-                      ZTX(1)=ZTX(1)+SMY(11,ISA)
+                      ZTX(1)=ZTX(1)+SMY(11,ISA) * WSA(ISA) !areal weighting for AET in mm. this is divided by the watershed area (RWSX) later in BSIM
                       ZTX(2)=ZTX(2)+SMY(16,ISA)
 	                  ZTX(3)=ZTX(3)+SMY(76,ISA)
                       ZTX(4)=ZTX(4)+SMY(18,ISA)
@@ -1329,9 +1329,9 @@
                       IF(KFL(4)>0)WRITE(KW(4),99)ISA,NBSA(ISA),IYR,IY,(SMYUA(KY(J1),&                  
                       ISA),J1=1,NKY)                                                                 
                       DO I=1,12                                                                      
-                          XTX(I)=XTX(I)+SMM(4,I,ISA)                                                     
+                          XTX(I)=XTX(I)+SMM(4,I,ISA)*WSA(ISA)                                                     
                       END DO                                                                         
-                      XTX(13)=XTX(13)+SMY(4,ISA)
+                      XTX(13)=XTX(13)+SMY(4,ISA)*WSA(ISA)
                       IF(ISA==1)THEN
                           ZTX(29)=SMYUA(31,1)
                           ZTX(30)=BTCX(1)
@@ -1433,14 +1433,22 @@
               D150=SRCH(15,NCMD)
           END IF              
           CALL APAGE(0)
-          DO I=1,28
-              ZTX(I)=ZTX(I)/RWSX
+          AREA1=0.
+          DO I=1,MSA
+            AREA1 = AREA1+WSA(I)
           END DO
-          DO I=32,37
-              ZTX(I)=ZTX(I)/RWSX
+          DO I=1,28    
+              IF(I==2.or.I==4)CYCLE    ! Luca Doro 2023-11-27
+              ZTX(I)=ZTX(I)/AREA1
+          END DO
+          ZTX(2)=ZTX(2)/(AREA1*10)    !mm - Luca Doro 2023-11-27
+          ZTX(4)=ZTX(4)/(AREA1*10)    !mm - Luca Doro 2023-11-27
+          DO I=32,35    ! DO I=32,37 replaced to fix error in YTHS and YWTH in AWP output file - Luca Doro 2023-04
+              ZTX(I)=ZTX(I)/AREA1
           END DO
           DO I=1,13
-              XTX(I)=.1*XTX(I)/RWSX
+              !XTX(I)=.1*XTX(I)/RWSX
+              XTX(I)=XTX(I)/AREA1
           END DO
           DO J=1,20 
               IF(J<3.OR.J==11.OR.J==12)THEN
@@ -1448,7 +1456,7 @@
               ELSE
                   X1=1.
               END IF    
-              SMYR(J)=X1*SMYR(J)/RWSX                                                     
+              SMYR(J)=X1*SMYR(J)/AREA1                                                     
           END DO
           YTP(1)=SRCH(15,NCMD)-YTP(1)
           YTP(2)=SRCH(16,NCMD)-YTP(2)
